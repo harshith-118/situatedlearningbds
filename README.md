@@ -4,28 +4,37 @@
 **BITS ID:** 2024DC04035  
 **Repo:** [harshith-118/situatedlearningbds](https://github.com/harshith-118/situatedlearningbds)
 
-AI-based benefits contract extraction pipeline designed on the Hadoop ecosystem (HDFS + Spark + Hive), with synthetic PoC data and Excel template population.
+AI-based benefits contract extraction pipeline on the Hadoop ecosystem (**HDFS + Spark + Hive**), with synthetic PoC data, Excel template population, and lab-cluster screenshots.
 
-## Contents
+## Deliverables
 
-| Path | Description |
+| File | Description |
 |------|-------------|
 | `DEVATA_SAI_HARSHITH_2024DC04035_Proposal.docx` | Project proposal |
-| `DEVATA_SAI_HARSHITH_2024DC04035_Presentation.pptx` | 7-slide presentation |
-| `poc/sample_data/` | Synthetic PDF/DOCX contracts, AI JSON, Excel template/export |
-| `poc/scripts/map_json_to_excel.py` | Post-extraction Excel fill script |
-| `poc/cluster/` | Lab cluster PoC: HDFS + Spark + Hive |
-| `Situated Learning.docx` | Assignment brief |
+| `DEVATA_SAI_HARSHITH_2024DC04035_Presentation.pptx` | 10-slide presentation (includes PoC evidence) |
+| `poc/` | Sample data, Excel script, cluster scripts |
+| `screenshots/` | Lab PoC evidence (HDFS / Spark / Hive) |
 
-## Lab PoC (3 Hadoop tools)
+## PoC results (lab cluster)
+
+- **10** synthetic contracts (5 PDF + 5 DOCX)
+- Spark: **9 VALID**, **1 INVALID** (SYN-2024-008 missing `broker`) ? **90%** success
+- Hive analytics on curated + quarantine tables
+
+See `screenshots/INDEX.md` for the labeled screenshot list.
+
+## Run on lab
 
 ```bash
 cd poc
-chmod +x cluster/*.sh
-./cluster/04_run_all.sh
+export HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
+export HDFS_BASE=/user/$(whoami)/situated_learning/contracts
+export HDFS_NAMENODE=hdfs://hadoop-master:9000
+export LOCAL_DATA=$PWD/sample_data
+./cluster/01_hdfs_ingest.sh
+spark-submit --master yarn --deploy-mode client cluster/02_spark_validate_map.py
+# then simple Hive queries (see cluster/RUNBOOK.md)
 ```
-
-See `poc/cluster/RUNBOOK.md` for steps and screenshot checklist.
 
 ## Note
 

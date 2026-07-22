@@ -5,6 +5,8 @@ __pycache__/
 *.log
 .idea/
 .vscode/
-screenshots/*.png
-screenshots/*.jpg
-!screenshots/.gitkeep
+screenshots/_preview/
+screenshots/_slides/
+spark-warehouse/
+metastore_db/
+derby.log
