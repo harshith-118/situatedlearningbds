@@ -1,15 +1,13 @@
--- Tool 3: Apache Hive — curated analytics over Spark/HDFS outputs
+-- Tool 3: Apache Hive analytics (simplified for lab MR stability)
 -- Student: DEVATA SAI HARSHITH | BITS ID: 2024DC04035
 --
--- BEFORE RUNNING: replace __HDFS_BASE__ with your path, e.g.
---   /user/2024DC04035/situated_learning/contracts
--- Or export and sed:
---   sed "s|__HDFS_BASE__|$HDFS_BASE|g" 03_hive_analytics.hql | hive -f -
+-- Replace __HDFS_BASE__ before running, e.g.:
+--   sed "s|__HDFS_BASE__|$HDFS_BASE|g" 03_hive_analytics.hql > /tmp/hive_poc.hql
+--   hive -f /tmp/hive_poc.hql
 
 CREATE DATABASE IF NOT EXISTS situated_learning;
 USE situated_learning;
 
--- External table over Spark curated CSV (header handled by skipping / or use parquet)
 DROP TABLE IF EXISTS contract_extractions;
 CREATE EXTERNAL TABLE contract_extractions (
   contract_id        STRING,
@@ -41,7 +39,6 @@ STORED AS TEXTFILE
 LOCATION '__HDFS_BASE__/curated/csv'
 TBLPROPERTIES ("skip.header.line.count"="1");
 
--- Quarantine / invalid extractions
 DROP TABLE IF EXISTS contract_quarantine;
 CREATE EXTERNAL TABLE contract_quarantine (
   contract_id        STRING,
@@ -73,15 +70,16 @@ STORED AS TEXTFILE
 LOCATION '__HDFS_BASE__/quarantine'
 TBLPROPERTIES ("skip.header.line.count"="1");
 
--- ========== Analytics queries (screenshot each result) ==========
+-- Prefer fetch / simple plans on small PoC data
+SET hive.fetch.task.conversion=more;
+SET hive.exec.mode.local.auto=true;
 
 -- Q1: overall volume
 SELECT 'Q1_total_valid' AS query_id, COUNT(*) AS total_valid
 FROM contract_extractions;
 
--- Q2: success vs quarantine
-SELECT 'Q2_valid' AS bucket, COUNT(*) AS cnt FROM contract_extractions
-UNION ALL
+-- Q2a / Q2b: split (avoid UNION ALL MR failure on some labs)
+SELECT 'Q2_valid' AS bucket, COUNT(*) AS cnt FROM contract_extractions;
 SELECT 'Q2_quarantine' AS bucket, COUNT(*) AS cnt FROM contract_quarantine;
 
 -- Q3: split by source format
@@ -98,9 +96,9 @@ ORDER BY contracts DESC;
 
 -- Q5: average coverage / deductible
 SELECT
-  ROUND(AVG(CAST(coverage_limit AS DOUBLE)), 2) AS avg_coverage_limit,
-  ROUND(AVG(CAST(deductible AS DOUBLE)), 2) AS avg_deductible,
-  ROUND(AVG(CAST(copay AS DOUBLE)), 2) AS avg_copay
+  ROUND(AVG(coverage_limit), 2) AS avg_coverage_limit,
+  ROUND(AVG(deductible), 2) AS avg_deductible,
+  ROUND(AVG(copay), 2) AS avg_copay
 FROM contract_extractions;
 
 -- Q6: plan type distribution
@@ -109,12 +107,12 @@ FROM contract_extractions
 GROUP BY plan_type
 ORDER BY contracts DESC;
 
--- Q7: sample curated extract (business-facing preview)
+-- Q7: sample curated extract
 SELECT contract_id, client_name, plan_type, network_name, status, source_format
 FROM contract_extractions
 ORDER BY contract_id
 LIMIT 20;
 
--- Q8: quarantine detail (shows missing broker case)
+-- Q8: quarantine detail
 SELECT contract_id, client_name, missing_fields, extraction_status, validation_status
 FROM contract_quarantine;
