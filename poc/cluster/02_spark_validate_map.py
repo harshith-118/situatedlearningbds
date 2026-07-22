@@ -1,17 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Tool 2: Apache Spark - validate AI extraction JSON, map fields, write curated data.
-
-Student: DEVATA SAI HARSHITH | BITS ID: 2024DC04035
-Course: Big Data Systems (CC ZG522) - Situated Learning PoC
-
-Run on lab cluster:
-  spark-submit poc/cluster/02_spark_validate_map.py
-
-Optional env:
-  HDFS_BASE=/user/<you>/situated_learning/contracts
-"""
+"""Situated Learning PoC - Spark validate/map (HDFS forced)."""
 
 from __future__ import print_function
 
@@ -20,7 +9,6 @@ import sys
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-
 
 REQUIRED_FIELDS = [
     "contract_id",
@@ -38,48 +26,29 @@ REQUIRED_FIELDS = [
 ]
 
 
-def hdfs_uri(path):
-    """Force HDFS scheme so Spark does not fall back to local file:// paths."""
-    if path.startswith("hdfs://") or path.startswith("file:/"):
-        return path
-    namenode = os.environ.get("HDFS_NAMENODE", "hdfs://hadoop-master:9000")
-    # Allow HDFS_NAMENODE=hdfs://host:port or host:port
-    if not namenode.startswith("hdfs://"):
-        namenode = "hdfs://{0}".format(namenode)
-    if not path.startswith("/"):
-        path = "/" + path
-    return "{0}{1}".format(namenode.rstrip("/"), path)
-
-
 def main():
-    hdfs_base = os.environ.get(
-        "HDFS_BASE",
-        "/user/{0}/situated_learning/contracts".format(
-            os.environ.get("USER", "student")
-        ),
-    )
-    # Strip accidental scheme from HDFS_BASE if user exported a full URI
-    if hdfs_base.startswith("hdfs://"):
-        # keep path only after namenode authority
-        parts = hdfs_base.split("/", 3)
-        hdfs_base = "/" + parts[3] if len(parts) > 3 else hdfs_base
+    # Force HDFS. Override with env if your namenode port differs.
+    namenode = os.environ.get("HDFS_NAMENODE", "hdfs://hadoop-master:9000")
+    base = os.environ.get("HDFS_BASE", "/user/cloud/situated_learning/contracts")
+    if base.startswith("hdfs://"):
+        # keep only the path part
+        base = "/" + base.split("/", 3)[-1]
 
-    json_path = hdfs_uri("{0}/extracted/json".format(hdfs_base))
-    curated_parquet = hdfs_uri("{0}/curated/parquet".format(hdfs_base))
-    curated_csv = hdfs_uri("{0}/curated/csv".format(hdfs_base))
-    quarantine = hdfs_uri("{0}/quarantine".format(hdfs_base))
-    metrics_path = hdfs_uri("{0}/logs/spark_metrics".format(hdfs_base))
+    json_dir = "{0}{1}/extracted/json".format(namenode.rstrip("/"), base)
+    curated_parquet = "{0}{1}/curated/parquet".format(namenode.rstrip("/"), base)
+    curated_csv = "{0}{1}/curated/csv".format(namenode.rstrip("/"), base)
+    quarantine = "{0}{1}/quarantine".format(namenode.rstrip("/"), base)
+    metrics_path = "{0}{1}/logs/spark_metrics".format(namenode.rstrip("/"), base)
 
     spark = (
         SparkSession.builder.appName("SituatedLearning_ContractValidateMap")
-        .enableHiveSupport()
+        .config("spark.hadoop.fs.defaultFS", namenode)
         .getOrCreate()
     )
     spark.sparkContext.setLogLevel("WARN")
 
-    print("==> Reading JSON from {0}".format(json_path))
-    # Directory path (not *.json glob) - Spark reads all JSON files in the folder
-    raw = spark.read.option("multiLine", "true").json(json_path)
+    print("==> Reading JSON from {0}".format(json_dir))
+    raw = spark.read.option("multiLine", "true").json(json_dir)
 
     flat = raw.select(
         F.col("fields.contract_id").alias("contract_id"),
@@ -125,10 +94,10 @@ def main():
     valid.write.mode("overwrite").format("parquet").save(curated_parquet)
 
     print("==> Writing curated CSV -> {0}".format(curated_csv))
-    valid.coalesce(1).write.mode("overwrite").option("header", True).csv(curated_csv)
+    valid.coalesce(1).write.mode("overwrite").option("header", "true").csv(curated_csv)
 
     print("==> Writing quarantine -> {0}".format(quarantine))
-    invalid.coalesce(1).write.mode("overwrite").option("header", True).csv(quarantine)
+    invalid.coalesce(1).write.mode("overwrite").option("header", "true").csv(quarantine)
 
     metrics = spark.createDataFrame(
         [
@@ -141,17 +110,13 @@ def main():
     )
     print("==> Spark metrics (screenshot this)")
     metrics.show(truncate=False)
-    metrics.coalesce(1).write.mode("overwrite").option("header", True).csv(metrics_path)
+    metrics.coalesce(1).write.mode("overwrite").option("header", "true").csv(metrics_path)
 
     valid.createOrReplaceTempView("contract_extractions_valid")
     print("==> Spark SQL by format (screenshot this)")
     spark.sql(
-        """
-        SELECT source_format, COUNT(*) AS cnt
-        FROM contract_extractions_valid
-        GROUP BY source_format
-        ORDER BY source_format
-        """
+        "SELECT source_format, COUNT(*) AS cnt "
+        "FROM contract_extractions_valid GROUP BY source_format ORDER BY source_format"
     ).show()
 
     spark.stop()
