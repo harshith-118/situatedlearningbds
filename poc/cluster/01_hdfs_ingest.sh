@@ -6,9 +6,17 @@ set -euo pipefail
 # ---- edit if your lab user/home path differs ----
 HDFS_BASE="${HDFS_BASE:-/user/$(whoami)/situated_learning/contracts}"
 LOCAL_DATA="${LOCAL_DATA:-$(cd "$(dirname "$0")/../sample_data" && pwd)}"
+HDFS_NAMENODE="${HDFS_NAMENODE:-hdfs://hadoop-master:9000}"
 
+echo "==> HDFS namenode: ${HDFS_NAMENODE}"
 echo "==> HDFS base: ${HDFS_BASE}"
 echo "==> Local data: ${LOCAL_DATA}"
+
+# Fail fast if HDFS is down
+if ! hdfs dfs -ls / >/dev/null 2>&1; then
+  echo "ERROR: cannot talk to HDFS. Run start-dfs.sh and check: jps && hdfs dfs -ls /" >&2
+  exit 1
+fi
 
 echo "==> Creating HDFS directories"
 hdfs dfs -mkdir -p \

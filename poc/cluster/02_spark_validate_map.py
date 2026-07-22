@@ -38,6 +38,19 @@ REQUIRED_FIELDS = [
 ]
 
 
+def hdfs_uri(path):
+    """Force HDFS scheme so Spark does not fall back to local file:// paths."""
+    if path.startswith("hdfs://") or path.startswith("file:/"):
+        return path
+    namenode = os.environ.get("HDFS_NAMENODE", "hdfs://hadoop-master:9000")
+    # Allow HDFS_NAMENODE=hdfs://host:port or host:port
+    if not namenode.startswith("hdfs://"):
+        namenode = "hdfs://{0}".format(namenode)
+    if not path.startswith("/"):
+        path = "/" + path
+    return "{0}{1}".format(namenode.rstrip("/"), path)
+
+
 def main():
     hdfs_base = os.environ.get(
         "HDFS_BASE",
@@ -45,11 +58,17 @@ def main():
             os.environ.get("USER", "student")
         ),
     )
-    json_path = "{0}/extracted/json/*.json".format(hdfs_base)
-    curated_parquet = "{0}/curated/parquet".format(hdfs_base)
-    curated_csv = "{0}/curated/csv".format(hdfs_base)
-    quarantine = "{0}/quarantine".format(hdfs_base)
-    metrics_path = "{0}/logs/spark_metrics".format(hdfs_base)
+    # Strip accidental scheme from HDFS_BASE if user exported a full URI
+    if hdfs_base.startswith("hdfs://"):
+        # keep path only after namenode authority
+        parts = hdfs_base.split("/", 3)
+        hdfs_base = "/" + parts[3] if len(parts) > 3 else hdfs_base
+
+    json_path = hdfs_uri("{0}/extracted/json".format(hdfs_base))
+    curated_parquet = hdfs_uri("{0}/curated/parquet".format(hdfs_base))
+    curated_csv = hdfs_uri("{0}/curated/csv".format(hdfs_base))
+    quarantine = hdfs_uri("{0}/quarantine".format(hdfs_base))
+    metrics_path = hdfs_uri("{0}/logs/spark_metrics".format(hdfs_base))
 
     spark = (
         SparkSession.builder.appName("SituatedLearning_ContractValidateMap")
@@ -59,7 +78,8 @@ def main():
     spark.sparkContext.setLogLevel("WARN")
 
     print("==> Reading JSON from {0}".format(json_path))
-    raw = spark.read.option("multiLine", True).json(json_path)
+    # Directory path (not *.json glob) - Spark reads all JSON files in the folder
+    raw = spark.read.option("multiLine", "true").json(json_path)
 
     flat = raw.select(
         F.col("fields.contract_id").alias("contract_id"),
