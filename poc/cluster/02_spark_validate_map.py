@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Tool 2: Apache Spark — validate AI extraction JSON, map fields, write curated data.
+Tool 2: Apache Spark - validate AI extraction JSON, map fields, write curated data.
 
 Student: DEVATA SAI HARSHITH | BITS ID: 2024DC04035
-Course: Big Data Systems (CC ZG522) — Situated Learning PoC
+Course: Big Data Systems (CC ZG522) - Situated Learning PoC
 
 Run on lab cluster:
   spark-submit poc/cluster/02_spark_validate_map.py
@@ -12,7 +13,7 @@ Optional env:
   HDFS_BASE=/user/<you>/situated_learning/contracts
 """
 
-from __future__ import annotations
+from __future__ import print_function
 
 import os
 import sys
@@ -37,16 +38,18 @@ REQUIRED_FIELDS = [
 ]
 
 
-def main() -> int:
+def main():
     hdfs_base = os.environ.get(
         "HDFS_BASE",
-        f"/user/{os.environ.get('USER', 'student')}/situated_learning/contracts",
+        "/user/{0}/situated_learning/contracts".format(
+            os.environ.get("USER", "student")
+        ),
     )
-    json_path = f"{hdfs_base}/extracted/json/*.json"
-    curated_parquet = f"{hdfs_base}/curated/parquet"
-    curated_csv = f"{hdfs_base}/curated/csv"
-    quarantine = f"{hdfs_base}/quarantine"
-    metrics_path = f"{hdfs_base}/logs/spark_metrics"
+    json_path = "{0}/extracted/json/*.json".format(hdfs_base)
+    curated_parquet = "{0}/curated/parquet".format(hdfs_base)
+    curated_csv = "{0}/curated/csv".format(hdfs_base)
+    quarantine = "{0}/quarantine".format(hdfs_base)
+    metrics_path = "{0}/logs/spark_metrics".format(hdfs_base)
 
     spark = (
         SparkSession.builder.appName("SituatedLearning_ContractValidateMap")
@@ -55,10 +58,9 @@ def main() -> int:
     )
     spark.sparkContext.setLogLevel("WARN")
 
-    print(f"==> Reading JSON from {json_path}")
+    print("==> Reading JSON from {0}".format(json_path))
     raw = spark.read.option("multiLine", True).json(json_path)
 
-    # Flatten nested AI extraction payload
     flat = raw.select(
         F.col("fields.contract_id").alias("contract_id"),
         F.col("fields.client_name").alias("client_name"),
@@ -80,15 +82,13 @@ def main() -> int:
         F.col("extracted_at"),
     )
 
-    # Validation: required fields must be non-null / non-empty
     cond = None
     for field in REQUIRED_FIELDS:
         c = F.col(field).isNull() | (F.trim(F.col(field).cast("string")) == "")
         cond = c if cond is None else (cond | c)
 
-    invalid = flat.filter(cond)
+    invalid = flat.filter(cond).withColumn("validation_status", F.lit("INVALID"))
     valid = flat.filter(~cond).withColumn("validation_status", F.lit("VALID"))
-    invalid = invalid.withColumn("validation_status", F.lit("INVALID"))
 
     print("==> Sample curated rows (screenshot this)")
     valid.show(20, truncate=False)
@@ -99,30 +99,16 @@ def main() -> int:
     total = flat.count()
     ok = valid.count()
     bad = invalid.count()
-    print(f"==> Totals: total={total}, valid={ok}, invalid={bad}")
+    print("==> Totals: total={0}, valid={1}, invalid={2}".format(total, ok, bad))
 
-    print(f"==> Writing curated parquet -> {curated_parquet}")
-    (
-        valid.write.mode("overwrite")
-        .format("parquet")
-        .save(curated_parquet)
-    )
+    print("==> Writing curated parquet -> {0}".format(curated_parquet))
+    valid.write.mode("overwrite").format("parquet").save(curated_parquet)
 
-    print(f"==> Writing curated CSV -> {curated_csv}")
-    (
-        valid.coalesce(1)
-        .write.mode("overwrite")
-        .option("header", True)
-        .csv(curated_csv)
-    )
+    print("==> Writing curated CSV -> {0}".format(curated_csv))
+    valid.coalesce(1).write.mode("overwrite").option("header", True).csv(curated_csv)
 
-    print(f"==> Writing quarantine -> {quarantine}")
-    (
-        invalid.coalesce(1)
-        .write.mode("overwrite")
-        .option("header", True)
-        .csv(quarantine)
-    )
+    print("==> Writing quarantine -> {0}".format(quarantine))
+    invalid.coalesce(1).write.mode("overwrite").option("header", True).csv(quarantine)
 
     metrics = spark.createDataFrame(
         [
@@ -137,7 +123,6 @@ def main() -> int:
     metrics.show(truncate=False)
     metrics.coalesce(1).write.mode("overwrite").option("header", True).csv(metrics_path)
 
-    # Optional: register temp view for quick SQL demo inside Spark
     valid.createOrReplaceTempView("contract_extractions_valid")
     print("==> Spark SQL by format (screenshot this)")
     spark.sql(
