@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-007.docx",
+  "source_format": "docx",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-007",
+    "client_name": "Ironclad Construction Co",
+    "effective_date": "2024-05-15",
+    "termination_date": "2025-05-14",
+    "plan_type": "HMO",
+    "network_name": "BuildWell Network",
+    "coverage_limit": 600000,
+    "deductible": 1000,
+    "copay": 15,
+    "region": "South",
+    "broker": "Steel City Brokers",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.96,
+    "client_name": 0.95,
+    "effective_date": 0.92,
+    "termination_date": 0.95,
+    "plan_type": 0.9,
+    "network_name": 0.96,
+    "coverage_limit": 0.94,
+    "deductible": 0.95,
+    "copay": 0.94,
+    "region": 0.9,
+    "broker": 0.94,
+    "status": 0.95
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

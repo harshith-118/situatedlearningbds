@@ -1,0 +1,24 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "total_contracts": 10,
+  "success_count": 9,
+  "partial_count": 1,
+  "by_format": {
+    "pdf": 5,
+    "docx": 5
+  },
+  "field_fill_rate": {
+    "contract_id": 1.0,
+    "client_name": 1.0,
+    "effective_date": 1.0,
+    "termination_date": 1.0,
+    "plan_type": 1.0,
+    "network_name": 1.0,
+    "coverage_limit": 1.0,
+    "deductible": 1.0,
+    "copay": 1.0,
+    "region": 1.0,
+    "broker": 0.9,
+    "status": 1.0
+  }
+}

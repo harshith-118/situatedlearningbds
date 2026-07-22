@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-005.pdf",
+  "source_format": "pdf",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-005",
+    "client_name": "Lakeside Hospitality Group",
+    "effective_date": "2024-04-01",
+    "termination_date": "2025-03-31",
+    "plan_type": "PPO",
+    "network_name": "Lakeside Choice",
+    "coverage_limit": 850000,
+    "deductible": 1250,
+    "copay": 35,
+    "region": "Midwest",
+    "broker": "Great Lakes Benefits",
+    "status": "Pending Amendment"
+  },
+  "field_confidence": {
+    "contract_id": 0.88,
+    "client_name": 0.91,
+    "effective_date": 0.9,
+    "termination_date": 0.95,
+    "plan_type": 0.93,
+    "network_name": 0.94,
+    "coverage_limit": 0.9,
+    "deductible": 0.95,
+    "copay": 0.89,
+    "region": 0.91,
+    "broker": 0.89,
+    "status": 0.94
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

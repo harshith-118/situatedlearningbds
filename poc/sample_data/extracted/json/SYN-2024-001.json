@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-001.pdf",
+  "source_format": "pdf",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-001",
+    "client_name": "Northstar Manufacturing LLC",
+    "effective_date": "2024-01-01",
+    "termination_date": "2024-12-31",
+    "plan_type": "PPO",
+    "network_name": "PrimeCare National",
+    "coverage_limit": 1000000,
+    "deductible": 1500,
+    "copay": 30,
+    "region": "Midwest",
+    "broker": "Summit Benefits Group",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.94,
+    "client_name": 0.89,
+    "effective_date": 0.9,
+    "termination_date": 0.89,
+    "plan_type": 0.93,
+    "network_name": 0.88,
+    "coverage_limit": 0.96,
+    "deductible": 0.89,
+    "copay": 0.93,
+    "region": 0.9,
+    "broker": 0.9,
+    "status": 0.97
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

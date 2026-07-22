@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-003.pdf",
+  "source_format": "pdf",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-003",
+    "client_name": "Cedar Ridge Retail Corp",
+    "effective_date": "2024-06-01",
+    "termination_date": "2025-05-31",
+    "plan_type": "EPO",
+    "network_name": "RidgeCare Preferred",
+    "coverage_limit": 500000,
+    "deductible": 2000,
+    "copay": 40,
+    "region": "South",
+    "broker": "Pine Tree Insurance Brokers",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.93,
+    "client_name": 0.94,
+    "effective_date": 0.89,
+    "termination_date": 0.94,
+    "plan_type": 0.95,
+    "network_name": 0.95,
+    "coverage_limit": 0.96,
+    "deductible": 0.95,
+    "copay": 0.88,
+    "region": 0.96,
+    "broker": 0.92,
+    "status": 0.9
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

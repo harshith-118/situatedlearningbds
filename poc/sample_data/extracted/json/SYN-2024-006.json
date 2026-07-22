@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-006.docx",
+  "source_format": "docx",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-006",
+    "client_name": "Aurora Pharma Distributors",
+    "effective_date": "2024-07-01",
+    "termination_date": "2025-06-30",
+    "plan_type": "PPO",
+    "network_name": "Aurora Care Network",
+    "coverage_limit": 1200000,
+    "deductible": 1750,
+    "copay": 20,
+    "region": "West",
+    "broker": "Cascade Benefit Advisors",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.89,
+    "client_name": 0.89,
+    "effective_date": 0.95,
+    "termination_date": 0.89,
+    "plan_type": 0.9,
+    "network_name": 0.97,
+    "coverage_limit": 0.94,
+    "deductible": 0.89,
+    "copay": 0.94,
+    "region": 0.94,
+    "broker": 0.95,
+    "status": 0.94
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

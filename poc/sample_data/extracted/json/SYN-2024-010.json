@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-010.docx",
+  "source_format": "docx",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-010",
+    "client_name": "Harborview Financial Partners",
+    "effective_date": "2024-10-01",
+    "termination_date": "2025-09-30",
+    "plan_type": "PPO",
+    "network_name": "Harborview Premier",
+    "coverage_limit": 950000,
+    "deductible": 1400,
+    "copay": 30,
+    "region": "Northeast",
+    "broker": "Coastal Benefits LLC",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.89,
+    "client_name": 0.97,
+    "effective_date": 0.91,
+    "termination_date": 0.88,
+    "plan_type": 0.93,
+    "network_name": 0.93,
+    "coverage_limit": 0.95,
+    "deductible": 0.95,
+    "copay": 0.92,
+    "region": 0.89,
+    "broker": 0.92,
+    "status": 0.89
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

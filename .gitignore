@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+.idea/
+.vscode/
+screenshots/*.png
+screenshots/*.jpg
+!screenshots/.gitkeep

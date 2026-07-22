@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-002.pdf",
+  "source_format": "pdf",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-002",
+    "client_name": "Blue Harbor Logistics Inc",
+    "effective_date": "2024-03-15",
+    "termination_date": "2025-03-14",
+    "plan_type": "HMO",
+    "network_name": "Harbor Health Select",
+    "coverage_limit": 750000,
+    "deductible": 1000,
+    "copay": 25,
+    "region": "Northeast",
+    "broker": "Atlantic Advisors",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.92,
+    "client_name": 0.96,
+    "effective_date": 0.91,
+    "termination_date": 0.97,
+    "plan_type": 0.94,
+    "network_name": 0.94,
+    "coverage_limit": 0.94,
+    "deductible": 0.89,
+    "copay": 0.95,
+    "region": 0.91,
+    "broker": 0.91,
+    "status": 0.95
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

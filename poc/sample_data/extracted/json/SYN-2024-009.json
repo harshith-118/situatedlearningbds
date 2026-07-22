@@ -1,0 +1,37 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-009.docx",
+  "source_format": "docx",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-009",
+    "client_name": "Nova Digital Media LLC",
+    "effective_date": "2024-08-01",
+    "termination_date": "2025-07-31",
+    "plan_type": "HDHP",
+    "network_name": "NovaShield",
+    "coverage_limit": 1500000,
+    "deductible": 3500,
+    "copay": 0,
+    "region": "Northeast",
+    "broker": "Metro Benefit Solutions",
+    "status": "Active"
+  },
+  "field_confidence": {
+    "contract_id": 0.88,
+    "client_name": 0.88,
+    "effective_date": 0.88,
+    "termination_date": 0.97,
+    "plan_type": 0.96,
+    "network_name": 0.94,
+    "coverage_limit": 0.88,
+    "deductible": 0.96,
+    "copay": 0.92,
+    "region": 0.93,
+    "broker": 0.88,
+    "status": 0.92
+  },
+  "missing_fields": [],
+  "extraction_status": "success"
+}

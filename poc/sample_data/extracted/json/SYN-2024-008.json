@@ -1,0 +1,39 @@
+{
+  "run_id": "poc-run-20260723-001",
+  "source_file": "SYN-2024-008.docx",
+  "source_format": "docx",
+  "extracted_at": "2026-07-23T00:50:00Z",
+  "model": "synthetic-extractor-v1",
+  "fields": {
+    "contract_id": "SYN-2024-008",
+    "client_name": "Greenfield Agro Foods",
+    "effective_date": "2024-09-01",
+    "termination_date": "2025-08-31",
+    "plan_type": "EPO",
+    "network_name": "Harvest Health",
+    "coverage_limit": 450000,
+    "deductible": 2500,
+    "copay": 50,
+    "region": "Midwest",
+    "broker": null,
+    "status": "Draft"
+  },
+  "field_confidence": {
+    "contract_id": 0.93,
+    "client_name": 0.89,
+    "effective_date": 0.97,
+    "termination_date": 0.91,
+    "plan_type": 0.91,
+    "network_name": 0.96,
+    "coverage_limit": 0.91,
+    "deductible": 0.97,
+    "copay": 0.95,
+    "region": 0.88,
+    "broker": 0.0,
+    "status": 0.95
+  },
+  "missing_fields": [
+    "broker"
+  ],
+  "extraction_status": "partial"
+}
