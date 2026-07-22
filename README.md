@@ -2,7 +2,6 @@
 
 **Student:** DEVATA SAI HARSHITH  
 **BITS ID:** 2024DC04035  
-**Repo:** [harshith-118/situatedlearningbds](https://github.com/harshith-118/situatedlearningbds)
 
 AI-based benefits contract extraction pipeline on the Hadoop ecosystem (**HDFS + Spark + Hive**), with synthetic PoC data, Excel template population, and lab-cluster screenshots.
 
